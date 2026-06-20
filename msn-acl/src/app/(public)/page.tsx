@@ -1,0 +1,88 @@
+import prisma from "@/lib/prisma";
+import { HeroSection } from "@/components/public/sections/HeroSection";
+import { ServicesSection } from "@/components/public/sections/ServicesSection";
+import { StatsSection } from "@/components/public/sections/StatsSection";
+import { ProjectsSection } from "@/components/public/sections/ProjectsSection";
+import { GlobalPresenceSection } from "@/components/public/sections/GlobalPresenceSection";
+import { MarqueeSection } from "@/components/public/sections/MarqueeSection";
+import { NewsSection } from "@/components/public/sections/NewsSection";
+import { LocationSection } from "@/components/public/sections/LocationSection";
+
+// Revalidate public pages periodically or on demand. 
+// Since this is a corporate site, 60 seconds is reasonable for ISR.
+export const revalidate = 60; 
+
+export default async function HomePage() {
+  // Fetch all active content sequentially or in parallel
+  const [
+    heroSlides,
+    services,
+    stats,
+    flagshipProjects,
+    globalPresence,
+    clients,
+    fundingAgencies,
+    newsPosts,
+    siteSetting
+  ] = await Promise.all([
+    prisma.heroSlide.findMany({
+      where: { isPublished: true },
+      orderBy: { order: "asc" }
+    }),
+    prisma.service.findMany({
+      where: { isPublished: true },
+      orderBy: { order: "asc" }
+    }),
+    prisma.stat.findMany({
+      orderBy: { order: "asc" }
+    }),
+    prisma.project.findMany({
+      where: { isPublished: true, isFlagship: true },
+      orderBy: { order: "asc" }
+    }),
+    prisma.globalPresence.findMany({
+      orderBy: { order: "asc" }
+    }),
+    prisma.client.findMany({
+      where: { isPublished: true },
+      orderBy: { order: "asc" }
+    }),
+    prisma.fundingAgency.findMany({
+      where: { isPublished: true },
+      orderBy: { order: "asc" }
+    }),
+    prisma.newsPost.findMany({
+      where: { isPublished: true },
+      orderBy: { publishedAt: "desc" },
+      take: 4
+    }),
+    prisma.siteSetting.findFirst()
+  ]);
+
+  return (
+    <div className="flex flex-col min-h-screen">
+      <HeroSection slides={heroSlides} />
+      <ServicesSection services={services} />
+      <StatsSection stats={stats} />
+      <ProjectsSection projects={flagshipProjects} />
+      <GlobalPresenceSection locations={globalPresence} />
+      <MarqueeSection 
+        title="Our Clients" 
+        description="Trusted by leading organizations worldwide."
+        items={clients} 
+        direction="left"
+        speed="normal"
+        bgClass="bg-white dark:bg-zinc-900"
+      />
+      <MarqueeSection 
+        title="Funding Agencies" 
+        items={fundingAgencies} 
+        direction="right"
+        speed="slow"
+        bgClass="bg-gray-50 dark:bg-zinc-950/50"
+      />
+      <NewsSection news={newsPosts} />
+      <LocationSection mapEmbedUrl={siteSetting?.mapEmbedUrl} />
+    </div>
+  );
+}
