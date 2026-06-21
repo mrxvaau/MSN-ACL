@@ -14,14 +14,17 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function AboutUsPage() {
-  const [siteSetting, teamMembers, pageHeader] = await Promise.all([
+  const [siteSetting, teamMembers, pageHeader, teamVisibility] = await Promise.all([
     prisma.siteSetting.findFirst(),
     prisma.teamMember.findMany({
       where: { isPublished: true },
       orderBy: { order: "asc" },
     }),
     prisma.pageHeader.findUnique({ where: { pageKey: "about-us" } }),
+    prisma.sectionVisibility.findUnique({ where: { key: "team" } }),
   ]);
+
+  const showTeam = teamVisibility?.isVisible ?? true;
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -49,20 +52,22 @@ export default async function AboutUsPage() {
       </section>
 
       {/* Team Section */}
-      <section className="py-24 bg-gray-50 dark:bg-zinc-900/50">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 text-foreground">
-              Meet Our Team
-            </h2>
-            <p className="text-muted-foreground text-lg">
-              The experts and visionaries behind our success.
-            </p>
+      {showTeam && (
+        <section className="py-24 bg-gray-50 dark:bg-zinc-900/50">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 text-foreground">
+                Meet Our Team
+              </h2>
+              <p className="text-muted-foreground text-lg">
+                The experts and visionaries behind our success.
+              </p>
+            </div>
+            
+            <TeamGrid members={teamMembers} />
           </div>
-          
-          <TeamGrid members={teamMembers} />
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 }

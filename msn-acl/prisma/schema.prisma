@@ -168,3 +168,19 @@ model PageHeader {
   backgroundImage String? // optional image; if empty, fall back to current dark style
 }
 
+model AdminLoginLog {
+  id        String   @id @default(cuid())
+  email     String
+  ipAddress String
+  success   Boolean
+  timestamp DateTime @default(now())
+}
+
+model SectionVisibility {
+  id        String  @id @default(cuid())
+  key       String  @unique // "services" | "stats" | "projects" | "clients" | "funding-agencies" | "news" | "global-presence" | "team" | "career" | "policies"
+  label     String  // human-readable name shown in admin, e.g. "Services Section"
+  isVisible Boolean @default(true)
+  order     Int     @default(0)
+}
+

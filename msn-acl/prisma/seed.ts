@@ -247,6 +247,27 @@ async function main() {
     })
   }
 
+  // 16. SectionVisibility
+  const sections = [
+    { key: "services", label: "Services Section", order: 0 },
+    { key: "stats", label: "Stats Section", order: 1 },
+    { key: "projects", label: "Flagship Projects", order: 2 },
+    { key: "global-presence", label: "Global Presence", order: 3 },
+    { key: "clients", label: "Our Clients", order: 4 },
+    { key: "funding-agencies", label: "Funding Agencies", order: 5 },
+    { key: "news", label: "News & Insights", order: 6 },
+    { key: "team", label: "Team (About Us)", order: 7 },
+    { key: "career", label: "Career Page", order: 8 },
+    { key: "policies", label: "Policies Page", order: 9 },
+  ]
+  for (const sec of sections) {
+    await prisma.sectionVisibility.upsert({
+      where: { key: sec.key },
+      update: {},
+      create: sec,
+    })
+  }
+
   console.log('Seed completed successfully.')
 }
 

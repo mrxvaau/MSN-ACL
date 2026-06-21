@@ -109,6 +109,14 @@ The application is currently configured to use a local SQLite database for ease 
    npx prisma db seed
    ```
 
+## Security Checklist Before Going Live
+Before deploying to production, ensure you complete the following security hardening steps:
+1. **Change ADMIN_PASSWORD**: Ensure your admin user has a strong, unique password.
+2. **Regenerate NEXTAUTH_SECRET**: Generate a new, random 32+ byte hex string and update your `.env` file. You can use `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` to generate one.
+3. **Ensure NEXTAUTH_URL is correct**: Make sure this matches your real production domain (e.g., `https://msnacl.com`).
+4. **Secure Cookies**: Make sure the application is served over HTTPS so NextAuth can enforce `__Secure-` cookies.
+5. **Consider 2FA**: As the application grows, consider enabling 2-Factor Authentication for the admin panel.
+
 ## Deployment Guide (Vercel)
 
 This Next.js application is optimized for deployment on Vercel.

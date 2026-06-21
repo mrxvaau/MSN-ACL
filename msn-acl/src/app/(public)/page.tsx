@@ -23,7 +23,8 @@ export default async function HomePage() {
     clients,
     fundingAgencies,
     newsPosts,
-    siteSetting
+    siteSetting,
+    visibilities
   ] = await Promise.all([
     prisma.heroSlide.findMany({
       where: { isPublished: true },
@@ -56,32 +57,52 @@ export default async function HomePage() {
       orderBy: { publishedAt: "desc" },
       take: 4
     }),
-    prisma.siteSetting.findFirst()
+    prisma.siteSetting.findFirst(),
+    prisma.sectionVisibility.findMany({
+      orderBy: { order: "asc" }
+    })
   ]);
+
+  const renderSection = (key: string, isVisible: boolean) => {
+    if (!isVisible) return null;
+    
+    switch(key) {
+      case "services": return <ServicesSection key="services" services={services} />;
+      case "stats": return <StatsSection key="stats" stats={stats} />;
+      case "projects": return <ProjectsSection key="projects" projects={flagshipProjects} />;
+      case "global-presence": return <GlobalPresenceSection key="global-presence" locations={globalPresence} />;
+      case "clients": return (
+        <MarqueeSection 
+          key="clients"
+          title="Our Clients" 
+          description="Trusted by leading organizations worldwide."
+          items={clients} 
+          direction="left"
+          speed="normal"
+          bgClass="bg-white dark:bg-zinc-900"
+        />
+      );
+      case "funding-agencies": return (
+        <MarqueeSection 
+          key="funding-agencies"
+          title="Funding Agencies" 
+          items={fundingAgencies} 
+          direction="right"
+          speed="slow"
+          bgClass="bg-gray-50 dark:bg-zinc-950/50"
+        />
+      );
+      case "news": return <NewsSection key="news" news={newsPosts} />;
+      default: return null;
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
       <HeroSection slides={heroSlides} />
-      <ServicesSection services={services} />
-      <StatsSection stats={stats} />
-      <ProjectsSection projects={flagshipProjects} />
-      <GlobalPresenceSection locations={globalPresence} />
-      <MarqueeSection 
-        title="Our Clients" 
-        description="Trusted by leading organizations worldwide."
-        items={clients} 
-        direction="left"
-        speed="normal"
-        bgClass="bg-white dark:bg-zinc-900"
-      />
-      <MarqueeSection 
-        title="Funding Agencies" 
-        items={fundingAgencies} 
-        direction="right"
-        speed="slow"
-        bgClass="bg-gray-50 dark:bg-zinc-950/50"
-      />
-      <NewsSection news={newsPosts} />
+      
+      {visibilities.map(v => renderSection(v.key, v.isVisible))}
+      
       <LocationSection mapEmbedUrl={siteSetting?.mapEmbedUrl} />
     </div>
   );

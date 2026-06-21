@@ -8,7 +8,7 @@ import {
   LayoutDashboard, Image as ImageIcon, Briefcase, BarChart, 
   FolderGit2, Users, Landmark, Newspaper, Globe, 
   UserSquare2, GraduationCap, FileText, Mail, Settings, 
-  LogOut, Menu, X
+  LogOut, Menu, X, Shield
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -29,6 +29,8 @@ const navItems = [
   { name: "Policies", href: "/admin/policies", icon: FileText },
   { name: "Social Links", href: "/admin/social-links", icon: Globe },
   { name: "Messages", href: "/admin/messages", icon: Mail },
+  { name: "Section Visibility", href: "/admin/section-visibility", icon: LayoutDashboard },
+  { name: "Security Logs", href: "/admin/security-log", icon: Shield },
   { name: "Settings", href: "/admin/settings", icon: Settings },
 ];
 
