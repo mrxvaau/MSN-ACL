@@ -57,5 +57,4 @@ next-env.d.ts
 *.db-journal
 
 # Uploads / Public assets generated dynamically
-/public/uploads/*
 !/public/uploads/.gitkeep
