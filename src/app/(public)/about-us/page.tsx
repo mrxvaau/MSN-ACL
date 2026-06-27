@@ -11,7 +11,8 @@ export const metadata: Metadata = {
   description: "Discover our story, our mission, and the brilliant minds driving innovation.",
 };
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
+
 
 export default async function AboutUsPage() {
   const [siteSetting, teamMembers, pageHeader, teamVisibility] = await Promise.all([

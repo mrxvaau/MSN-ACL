@@ -1,9 +1,15 @@
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import { SettingsForm } from "@/components/admin/SettingsForm";
 import prisma from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
+  const session = await getServerSession(authOptions);
+  if (!session) redirect("/admin/login");
+
   const settings = await prisma.siteSetting.findFirst();
 
   return (

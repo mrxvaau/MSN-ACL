@@ -3,7 +3,8 @@ import { ContactForm } from "@/components/public/contact/ContactForm";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import PageBanner from "@/components/public/PageBanner";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
+
 
 import { Metadata } from "next";
 

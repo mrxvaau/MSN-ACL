@@ -2,7 +2,9 @@ import prisma from "@/lib/prisma";
 import { CareerList } from "@/components/public/career/CareerList";
 import PageBanner from "@/components/public/PageBanner";
 
-export const revalidate = 60;
+// Use dynamic rendering — DB is only available at request time (production server), not build time.
+export const dynamic = "force-dynamic";
+
 
 import { Metadata } from "next";
 

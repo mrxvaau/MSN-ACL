@@ -1,9 +1,15 @@
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { SectionVisibilityList } from "@/components/admin/SectionVisibilityList";
 
 export const dynamic = "force-dynamic";
 
 export default async function SectionVisibilityPage() {
+  const session = await getServerSession(authOptions);
+  if (!session) redirect("/admin/login");
+
   const sections = await prisma.sectionVisibility.findMany({
     orderBy: { order: "asc" },
   });

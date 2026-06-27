@@ -9,6 +9,16 @@ const port = process.env.PORT || 3000
 const app = next({ dev, hostname, port })
 const handle = app.getRequestHandler()
 
+// Startup environment checks — helps diagnose auth issues in production logs
+console.log('=== MSN ACL Startup Check ===')
+console.log('NODE_ENV:', process.env.NODE_ENV)
+console.log('PORT:', port)
+console.log('NEXTAUTH_URL:', process.env.NEXTAUTH_URL || '⚠ NOT SET')
+console.log('NEXTAUTH_SECRET configured:', !!process.env.NEXTAUTH_SECRET)
+console.log('DATABASE_URL configured:', !!process.env.DATABASE_URL)
+console.log('=============================')
+
+
 app.prepare().then(() => {
   createServer(async (req, res) => {
     try {

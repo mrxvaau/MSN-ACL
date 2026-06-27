@@ -2,7 +2,8 @@ import prisma from "@/lib/prisma";
 import { ProjectsList } from "@/components/public/projects/ProjectsList";
 import PageBanner from "@/components/public/PageBanner";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
+
 
 import { Metadata } from "next";
 

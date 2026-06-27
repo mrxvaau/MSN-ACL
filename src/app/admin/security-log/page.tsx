@@ -1,12 +1,17 @@
-import { PrismaClient } from "@prisma/client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import prisma from "@/lib/prisma";
 
-const prisma = new PrismaClient();
 export const dynamic = "force-dynamic";
 
 export default async function SecurityLogPage() {
+  const session = await getServerSession(authOptions);
+  if (!session) redirect("/admin/login");
+
   const logs = await prisma.adminLoginLog.findMany({
     orderBy: { timestamp: "desc" },
-    take: 100, // Limit to 100 recent logs to prevent overwhelming the UI
+    take: 100,
   });
 
   const dateFormatter = new Intl.DateTimeFormat("en-US", {
@@ -16,7 +21,7 @@ export default async function SecurityLogPage() {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
-    hour12: false
+    hour12: false,
   });
 
   return (

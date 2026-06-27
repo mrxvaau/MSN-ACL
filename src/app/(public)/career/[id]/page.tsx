@@ -9,16 +9,8 @@ interface Props {
   params: Promise<{ id: string }>;
 }
 
-export async function generateStaticParams() {
-  const jobs = await prisma.jobPosting.findMany({
-    where: { isPublished: true },
-    select: { id: true },
-  });
-
-  return jobs.map((job) => ({
-    id: job.id,
-  }));
-}
+// Use dynamic rendering — fetches from DB at request time, not build time.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;

@@ -8,9 +8,9 @@ import { MarqueeSection } from "@/components/public/sections/MarqueeSection";
 import { NewsSection } from "@/components/public/sections/NewsSection";
 import { LocationSection } from "@/components/public/sections/LocationSection";
 
-// Revalidate public pages periodically or on demand. 
-// Since this is a corporate site, 60 seconds is reasonable for ISR.
-export const revalidate = 60; 
+// Use dynamic rendering — DB is only available at request time (production server), not build time.
+export const dynamic = "force-dynamic";
+
 
 export default async function HomePage() {
   // Fetch all active content sequentially or in parallel

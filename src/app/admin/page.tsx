@@ -1,5 +1,6 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,6 +8,7 @@ import { Mail, FolderGit2, Newspaper, Briefcase, Image as ImageIcon, Users, Mail
 
 export default async function AdminDashboard() {
   const session = await getServerSession(authOptions);
+  if (!session) redirect("/admin/login");
 
   // Fetch real counts from DB
   const [

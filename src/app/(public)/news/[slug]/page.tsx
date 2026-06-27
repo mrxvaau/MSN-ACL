@@ -10,16 +10,8 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
-export async function generateStaticParams() {
-  const news = await prisma.newsPost.findMany({
-    where: { isPublished: true },
-    select: { slug: true },
-  });
-
-  return news.map((post) => ({
-    slug: post.slug,
-  }));
-}
+// Use dynamic rendering — fetches from DB at request time, not build time.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
