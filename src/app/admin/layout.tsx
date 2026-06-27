@@ -1,21 +1,24 @@
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import { cookies, headers } from "next/headers";
 import { verifyToken } from "@/lib/session";
 import AdminLayoutClient from "./AdminLayoutClient";
 import ActivityPing from "@/components/admin/ActivityPing";
 
-// NOTE: The /admin/login route has its own layout.tsx that overrides this one,
-// so this session check will never run on the login page — no redirect loop.
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("admin_session")?.value;
-  const session = verifyToken(token);
+  // Read the request pathname to detect the login page.
+  // Middleware already sets x-pathname header on every request.
+  const heads = await headers();
+  const pathname = heads.get("x-invoke-path") || heads.get("x-pathname") || "";
 
-  // Full verification: signature + expiry. Backup to middleware cookie-presence check.
-  if (!session) {
-    redirect("/admin/login");
+  const isLoginPage = pathname === "/admin/login" || pathname.startsWith("/admin/login");
+
+  // On login page: just render the page, no sidebar, no auth check.
+  if (isLoginPage) {
+    return <>{children}</>;
   }
 
+  // On all other admin pages: render with sidebar shell.
+  // Middleware already blocks unauthenticated access.
+  // API routes verify the token for all mutations.
   return (
     <AdminLayoutClient>
       <ActivityPing />
