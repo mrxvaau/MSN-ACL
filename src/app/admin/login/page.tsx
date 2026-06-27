@@ -1,16 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -21,17 +18,25 @@ export default function LoginPage() {
     setIsLoading(true);
     setError(null);
 
-    const result = await signIn("credentials", {
-      redirect: false,
-      email,
-      password,
-    });
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+        credentials: "same-origin",
+      });
 
-    if (result?.error) {
-      setError(result.error);
+      const data = await res.json();
+
+      if (data.ok) {
+        window.location.href = "/admin";
+      } else {
+        setError(data.error || "Invalid credentials");
+        setIsLoading(false);
+      }
+    } catch {
+      setError("Network error. Please try again.");
       setIsLoading(false);
-    } else {
-      router.push("/admin");
     }
   };
 
@@ -45,7 +50,7 @@ export default function LoginPage() {
       >
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold tracking-tight text-primary">MSN ACL</h1>
-          <p className="text-muted-foreground mt-2">Corporate Website & Admin CMS</p>
+          <p className="text-muted-foreground mt-2">Corporate Website &amp; Admin CMS</p>
         </div>
 
         <Card className="shadow-lg border-gray-200 dark:border-zinc-800 rounded-xl overflow-hidden">

@@ -1,6 +1,3 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { redirect } from "next/navigation";
 import { Metadata } from "next";
 import PageHeadersClient from "./PageHeadersClient";
 import prisma from "@/lib/prisma";
@@ -10,9 +7,6 @@ export const metadata: Metadata = {
 };
 
 export default async function PageHeadersAdmin() {
-  const session = await getServerSession(authOptions);
-  if (!session) redirect("/admin/login");
-
   const data = await prisma.pageHeader.findMany({
     orderBy: { pageKey: "asc" },
   });

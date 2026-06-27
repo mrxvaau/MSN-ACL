@@ -1,14 +1,14 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
+import { cookies } from "next/headers";
+import { verifyToken } from "@/lib/session";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Mail, FolderGit2, Newspaper, Briefcase, Image as ImageIcon, Users, MailWarning } from "lucide-react";
 
+
 export default async function AdminDashboard() {
-  const session = await getServerSession(authOptions);
-  if (!session) redirect("/admin/login");
+  const cookieStore = await cookies();
+  const session = verifyToken(cookieStore.get("admin_session")?.value);
 
   // Fetch real counts from DB
   const [
@@ -43,7 +43,7 @@ export default async function AdminDashboard() {
       <div>
         <h1 className="text-3xl font-bold tracking-tight text-foreground">Dashboard</h1>
         <p className="text-muted-foreground mt-2">
-          Welcome back, <span className="font-semibold text-primary">{session?.user?.name || "Admin"}</span>! Here is an overview of your site.
+          Welcome back, <span className="font-semibold text-primary">{session?.name || "Admin"}</span>! Here is an overview of your site.
         </p>
       </div>
 

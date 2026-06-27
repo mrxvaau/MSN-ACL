@@ -1,14 +1,8 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
 export default async function SecurityLogPage() {
-  const session = await getServerSession(authOptions);
-  if (!session) redirect("/admin/login");
-
   const logs = await prisma.adminLoginLog.findMany({
     orderBy: { timestamp: "desc" },
     take: 100,

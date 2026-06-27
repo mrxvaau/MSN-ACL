@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
+
 import { 
   LayoutDashboard, Image as ImageIcon, Briefcase, BarChart, 
   FolderGit2, Users, Landmark, Newspaper, Globe, 
@@ -37,6 +37,11 @@ const navItems = [
 export default function AdminLayoutClient({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", { method: "POST", credentials: "same-origin" });
+    window.location.href = "/admin/login";
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 flex flex-col md:flex-row">
@@ -96,7 +101,7 @@ export default function AdminLayoutClient({ children }: { children: React.ReactN
           <Button 
             variant="outline" 
             className="w-full justify-start gap-3 text-muted-foreground hover:text-destructive hover:bg-red-50 dark:hover:bg-red-950/30"
-            onClick={() => signOut({ callbackUrl: "/admin/login" })}
+            onClick={() => handleLogout()}
           >
             <LogOut className="w-4 h-4" />
             Logout

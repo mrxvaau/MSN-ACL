@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
+
 const nextConfig: NextConfig = {
-  // Disable ESLint during builds — eslint-config-next has compatibility issues
-  // with ESLint v9 flat config. Run `npm run lint` separately.
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -13,5 +12,19 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "res.cloudinary.com" },
     ],
   },
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "X-XSS-Protection", value: "1; mode=block" },
+        ],
+      },
+    ];
+  },
 };
+
 export default nextConfig;
